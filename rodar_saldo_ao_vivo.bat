@@ -22,13 +22,13 @@ echo.
 if exist ".venv\Scripts\python.exe" (
     set "PYTHON_EXE=.venv\Scripts\python.exe"
 ) else (
-    where python >nul 2>nul
+    py -3.11 --version >nul 2>nul
     if not errorlevel 1 (
-        set "PYTHON_EXE=python"
+        set "PYTHON_EXE=py -3.11"
     ) else (
-        py -3.11 --version >nul 2>nul
+        where python >nul 2>nul
         if not errorlevel 1 (
-            set "PYTHON_EXE=py -3.11"
+            set "PYTHON_EXE=python"
         ) else (
             py -3 --version >nul 2>nul
             if not errorlevel 1 (
@@ -79,6 +79,35 @@ if errorlevel 1 (
     echo Veja o log em: %LOG_FILE%
     >> "%LOG_FILE%" echo ERRO: falha ao instalar dependencias do requirements.txt.
     exit /b 1
+)
+
+echo.
+echo Validando Playwright e greenlet...
+>> "%LOG_FILE%" echo Validando imports do Playwright e greenlet...
+%PYTHON_EXE% -c "import greenlet; from playwright.sync_api import sync_playwright; print('playwright_ok')" >> "%LOG_FILE%" 2>&1
+if errorlevel 1 (
+    echo Playwright/greenlet falhou ao importar. Reinstalando pacotes nativos...
+    >> "%LOG_FILE%" echo Playwright/greenlet falhou ao importar. Reinstalando pacotes nativos...
+    %PYTHON_EXE% -m pip install --disable-pip-version-check --force-reinstall --no-cache-dir greenlet playwright >> "%LOG_FILE%" 2>&1
+    if errorlevel 1 (
+        echo.
+        echo ERRO: falha ao reinstalar greenlet/playwright.
+        echo Veja o log em: %LOG_FILE%
+        >> "%LOG_FILE%" echo ERRO: falha ao reinstalar greenlet/playwright.
+        exit /b 1
+    )
+
+    %PYTHON_EXE% -c "import greenlet; from playwright.sync_api import sync_playwright; print('playwright_ok')" >> "%LOG_FILE%" 2>&1
+    if errorlevel 1 (
+        echo.
+        echo ERRO: greenlet/playwright ainda nao carregou.
+        echo Instale o Microsoft Visual C++ Redistributable x64 no servidor e rode novamente.
+        echo Link: https://aka.ms/vs/17/release/vc_redist.x64.exe
+        echo Veja o log em: %LOG_FILE%
+        >> "%LOG_FILE%" echo ERRO: greenlet/playwright ainda nao carregou.
+        >> "%LOG_FILE%" echo Instale o Microsoft Visual C++ Redistributable x64: https://aka.ms/vs/17/release/vc_redist.x64.exe
+        exit /b 1
+    )
 )
 
 echo.
