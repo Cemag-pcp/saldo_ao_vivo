@@ -7,14 +7,8 @@ SERVICE_FILE="/etc/systemd/system/${APP_NAME}.service"
 TIMER_FILE="/etc/systemd/system/${APP_NAME}.timer"
 RUN_USER="${SUDO_USER:-$USER}"
 RUN_HOME="$(getent passwd "${RUN_USER}" | cut -d: -f6)"
-
-if [[ -x "${APP_DIR}/venv/bin/python" ]]; then
-  PYTHON_EXE="${APP_DIR}/venv/bin/python"
-elif [[ -x "${APP_DIR}/.venv/bin/python" ]]; then
-  PYTHON_EXE="${APP_DIR}/.venv/bin/python"
-else
-  PYTHON_EXE="$(command -v python3)"
-fi
+VENV_DIR="${APP_DIR}/venv"
+PYTHON_EXE="${VENV_DIR}/bin/python"
 
 if [[ ! -f "${APP_DIR}/main.py" ]]; then
   echo "ERRO: main.py nao encontrado em ${APP_DIR}"
@@ -23,6 +17,24 @@ fi
 
 mkdir -p "${APP_DIR}/logs"
 chmod +x "${APP_DIR}/run_linux_service.sh"
+
+if [[ ! -x "${PYTHON_EXE}" ]]; then
+  echo "Ambiente virtual ausente ou quebrado. Recriando venv..."
+  rm -rf "${VENV_DIR}"
+  python3 -m venv "${VENV_DIR}"
+fi
+
+if ! "${PYTHON_EXE}" -c "import sys; print(sys.executable)" >/dev/null 2>&1; then
+  echo "Python do venv nao executa corretamente. Recriando venv..."
+  rm -rf "${VENV_DIR}"
+  python3 -m venv "${VENV_DIR}"
+fi
+
+echo "Instalando/atualizando dependencias no venv..."
+"${PYTHON_EXE}" -m pip install --upgrade pip
+"${PYTHON_EXE}" -m pip install -r "${APP_DIR}/requirements.txt"
+"${PYTHON_EXE}" -m playwright install chromium
+"${PYTHON_EXE}" -c "from playwright.sync_api import sync_playwright; print('playwright_ok')"
 
 sudo tee "${SERVICE_FILE}" >/dev/null <<EOF
 [Unit]

@@ -2,13 +2,11 @@
 set -uo pipefail
 
 APP_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PYTHON_EXE="${APP_DIR}/venv/bin/python"
 
-if [[ -x "${APP_DIR}/venv/bin/python" ]]; then
-  PYTHON_EXE="${APP_DIR}/venv/bin/python"
-elif [[ -x "${APP_DIR}/.venv/bin/python" ]]; then
-  PYTHON_EXE="${APP_DIR}/.venv/bin/python"
-else
-  PYTHON_EXE="$(command -v python3)"
+if [[ ! -x "${PYTHON_EXE}" ]]; then
+  echo "ERRO: venv/bin/python nao encontrado. Rode ./install_linux_timer.sh primeiro."
+  exit 1
 fi
 
 cd "${APP_DIR}" || exit 1
