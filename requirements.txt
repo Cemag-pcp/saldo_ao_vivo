@@ -1,0 +1,7 @@
+playwright
+python-dotenv
+pandas
+requests
+gspread
+google-auth
+psycopg2-binary
