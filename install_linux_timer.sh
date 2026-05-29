@@ -21,6 +21,8 @@ if [[ ! -f "${APP_DIR}/main.py" ]]; then
   exit 1
 fi
 
+mkdir -p "${APP_DIR}/logs"
+
 sudo tee "${SERVICE_FILE}" >/dev/null <<EOF
 [Unit]
 Description=Saldo ao Vivo
@@ -35,7 +37,7 @@ Environment="APP_DIR=${APP_DIR}"
 Environment="PYTHON_EXE=${PYTHON_EXE}"
 Environment=PYTHONUNBUFFERED=1
 WorkingDirectory=${APP_DIR}
-ExecStart=/usr/bin/env bash -lc 'cd "$APP_DIR" && exec "$PYTHON_EXE" "$APP_DIR/main.py"'
+ExecStart=/usr/bin/env bash -lc 'cd "$APP_DIR" && mkdir -p logs && LOG_FILE="logs/saldo-ao-vivo-$(date +%%Y%%m%%d-%%H%%M%%S).log" && echo "Inicio: $(date -Is)" | tee -a "$LOG_FILE" && "$PYTHON_EXE" "$APP_DIR/main.py" 2>&1 | tee -a "$LOG_FILE"; STATUS=${PIPESTATUS[0]}; echo "Fim: $(date -Is) status=${STATUS}" | tee -a "$LOG_FILE"; exit "$STATUS"'
 EOF
 
 sudo tee "${TIMER_FILE}" >/dev/null <<EOF
@@ -89,3 +91,6 @@ systemctl list-timers --all "${APP_NAME}.timer" --no-pager
 echo
 echo "Para ver logs:"
 echo "journalctl -u ${APP_NAME}.service -f"
+echo
+echo "Logs em arquivo:"
+echo "${APP_DIR}/logs/"
