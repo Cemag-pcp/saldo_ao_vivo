@@ -31,7 +31,6 @@ if exist ".venv\Scripts\python.exe" (
                 echo python -m pip install playwright python-dotenv pandas requests gspread google-auth psycopg2-binary
                 echo python -m playwright install chromium
                 echo.
-                pause
                 exit /b 1
             )
         )
@@ -52,5 +51,4 @@ if "%EXIT_CODE%"=="0" (
 )
 
 echo.
-pause
 exit /b %EXIT_CODE%
