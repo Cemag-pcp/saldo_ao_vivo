@@ -40,10 +40,10 @@ EOF
 
 sudo tee "${TIMER_FILE}" >/dev/null <<EOF
 [Unit]
-Description=Executa Saldo ao Vivo de hora em hora
+Description=Executa Saldo ao Vivo de hora em hora das 07:00 as 19:00
 
 [Timer]
-OnCalendar=hourly
+OnCalendar=*-*-* 07..19:00:00
 Persistent=true
 Unit=${APP_NAME}.service
 
