@@ -43,6 +43,14 @@ def normalizar_nome_coluna(nome):
 
     return texto
 
+
+def limpar_valores_dataframe(df):
+    limpar = lambda x: str(x).replace('="', '').replace('"', '')
+    if hasattr(df, "map"):
+        return df.map(limpar)
+    return df.applymap(limpar)
+
+
 def ultimo_arquivo():
 
     # Caminho para a pasta "Downloads"
@@ -97,7 +105,7 @@ def inserir_postgres_saldo_central_mp(df=None, tabela='ConsultaSaldoInnovaro'):
 
         # Limpeza de colunas
         df.rename(columns=lambda x: x.replace('="', '').replace('"', ''), inplace=True)
-        df = df.applymap(lambda x: str(x).replace('="', '').replace('"', ''))
+        df = limpar_valores_dataframe(df)
 
         # Conversões numéricas
         df['Saldo'] = df['Saldo'].apply(lambda x: float(x.replace('.', '').replace(',', '.')))
@@ -216,7 +224,7 @@ def inserir_gspread_saldo_central_mp():
     
     df.rename(columns=lambda x: x.replace('="', '').replace('"', ''), inplace=True)
     
-    df = df.applymap(lambda x: str(x).replace('="', '').replace('"', ''))
+    df = limpar_valores_dataframe(df)
 
     df['Saldo'] = df['Saldo'].apply(lambda x: float(x.replace(".","").replace(",",".")))
     df['Custo#Total'] = df['Custo#Total'].apply(lambda x: float(x.replace(".","").replace(",",".")))
@@ -334,7 +342,7 @@ def inserir_gspread_saldo_levantamento():
     
     df.rename(columns=lambda x: x.replace('="', '').replace('"', ''), inplace=True)
     
-    df = df.applymap(lambda x: str(x).replace('="', '').replace('"', ''))
+    df = limpar_valores_dataframe(df)
 
     df['Saldo'] = df['Saldo'].apply(lambda x: float(x.replace(".","").replace(",",".")))
     df['Custo#Total'] = df['Custo#Total'].apply(lambda x: float(x.replace(".","").replace(",",".")))
@@ -418,7 +426,7 @@ def inserir_gspread_saldo_levantamento_incluindo_em_processo():
     
     df.rename(columns=lambda x: x.replace('="', '').replace('"', ''), inplace=True)
     
-    df = df.applymap(lambda x: str(x).replace('="', '').replace('"', ''))
+    df = limpar_valores_dataframe(df)
 
     df['Saldo'] = df['Saldo'].apply(lambda x: float(x.replace(".","").replace(",",".")))
     df['Custo#Total'] = df['Custo#Total'].apply(lambda x: float(x.replace(".","").replace(",",".")))
