@@ -13,24 +13,19 @@ echo.
 if exist ".venv\Scripts\python.exe" (
     set "PYTHON_EXE=.venv\Scripts\python.exe"
 ) else (
-    python -c "import playwright" >nul 2>nul
+    where python >nul 2>nul
     if not errorlevel 1 (
         set "PYTHON_EXE=python"
     ) else (
-        py -3.11 -c "import playwright" >nul 2>nul
+        py -3.11 --version >nul 2>nul
         if not errorlevel 1 (
             set "PYTHON_EXE=py -3.11"
         ) else (
-            py -3 -c "import playwright" >nul 2>nul
+            py -3 --version >nul 2>nul
             if not errorlevel 1 (
                 set "PYTHON_EXE=py -3"
             ) else (
-                echo ERRO: nao encontrei um Python com o pacote playwright instalado.
-                echo.
-                echo Instale as dependencias com:
-                echo python -m pip install playwright python-dotenv pandas requests gspread google-auth psycopg2-binary
-                echo python -m playwright install chromium
-                echo.
+                echo ERRO: nao encontrei Python instalado nesta maquina.
                 exit /b 1
             )
         )
@@ -40,6 +35,29 @@ if exist ".venv\Scripts\python.exe" (
 echo Usando Python: %PYTHON_EXE%
 echo.
 
+if not exist "requirements.txt" (
+    echo ERRO: arquivo requirements.txt nao encontrado.
+    exit /b 1
+)
+
+echo Verificando e instalando dependencias do Python...
+%PYTHON_EXE% -m pip install -r requirements.txt
+if errorlevel 1 (
+    echo.
+    echo ERRO: falha ao instalar dependencias do requirements.txt.
+    exit /b 1
+)
+
+echo.
+echo Verificando navegador Chromium do Playwright...
+%PYTHON_EXE% -m playwright install chromium
+if errorlevel 1 (
+    echo.
+    echo ERRO: falha ao instalar o Chromium do Playwright.
+    exit /b 1
+)
+
+echo.
 %PYTHON_EXE% main.py
 set "EXIT_CODE=%ERRORLEVEL%"
 
