@@ -37,7 +37,7 @@ Environment="APP_DIR=${APP_DIR}"
 Environment="PYTHON_EXE=${PYTHON_EXE}"
 Environment=PYTHONUNBUFFERED=1
 WorkingDirectory=${APP_DIR}
-ExecStart=/usr/bin/env bash -lc 'cd "$APP_DIR" && mkdir -p logs && LOG_FILE="logs/saldo-ao-vivo-$(date +%%Y%%m%%d-%%H%%M%%S).log" && echo "Inicio: $(date -Is)" | tee -a "$LOG_FILE" && "$PYTHON_EXE" "$APP_DIR/main.py" 2>&1 | tee -a "$LOG_FILE"; STATUS=${PIPESTATUS[0]}; echo "Fim: $(date -Is) status=${STATUS}" | tee -a "$LOG_FILE"; exit "$STATUS"'
+ExecStart=/usr/bin/env bash -lc 'cd "\$APP_DIR" && mkdir -p logs && LOG_FILE="logs/saldo-ao-vivo-\$(date +%%Y%%m%%d-%%H%%M%%S).log" && echo "Inicio: \$(date -Is)" | tee -a "\$LOG_FILE" && "\$PYTHON_EXE" "\$APP_DIR/main.py" 2>&1 | tee -a "\$LOG_FILE"; STATUS=\${PIPESTATUS[0]}; echo "Fim: \$(date -Is) status=\${STATUS}" | tee -a "\$LOG_FILE"; exit "\$STATUS"'
 EOF
 
 sudo tee "${TIMER_FILE}" >/dev/null <<EOF
