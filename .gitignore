@@ -1,0 +1,68 @@
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# Python bytecode and caches
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Python packaging/build output
+build/
+dist/
+*.egg-info/
+*.egg
+pip-wheel-metadata/
+
+# Playwright
+playwright-report/
+test-results/
+trace.zip
+*.webm
+
+# Logs
+*.log
+logs/
+
+# Local downloads/exports
+downloads/
+Downloads/
+*.csv
+*.xlsx
+*.xls
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE/editor files
+.idea/
+.vscode/
+*.code-workspace
+
+# Local runtime files
+*.pid
+*.tmp
+*.temp
+
+# Credentials and service account files
+credentials.json
+service-account.json
+service_account.json
+*.service-account.json
+*.key
+*.pem
