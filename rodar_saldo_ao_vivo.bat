@@ -35,16 +35,13 @@ if exist ".venv\Scripts\python.exe" (
 echo Usando Python: %PYTHON_EXE%
 echo.
 
-if not exist "requirements.txt" (
-    echo ERRO: arquivo requirements.txt nao encontrado.
-    exit /b 1
-)
+set "DEPENDENCIAS=playwright python-dotenv pandas requests gspread google-auth psycopg2-binary"
 
 echo Verificando e instalando dependencias do Python...
-%PYTHON_EXE% -m pip install -r requirements.txt
+%PYTHON_EXE% -m pip install %DEPENDENCIAS%
 if errorlevel 1 (
     echo.
-    echo ERRO: falha ao instalar dependencias do requirements.txt.
+    echo ERRO: falha ao instalar dependencias do Python.
     exit /b 1
 )
 
