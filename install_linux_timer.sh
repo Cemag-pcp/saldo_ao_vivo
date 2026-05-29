@@ -34,7 +34,7 @@ Environment="HOME=${RUN_HOME}"
 Environment="APP_DIR=${APP_DIR}"
 Environment="PYTHON_EXE=${PYTHON_EXE}"
 Environment=PYTHONUNBUFFERED=1
-WorkingDirectory="${APP_DIR}"
+WorkingDirectory=${APP_DIR}
 ExecStart=/usr/bin/env bash -lc 'cd "$APP_DIR" && exec "$PYTHON_EXE" "$APP_DIR/main.py"'
 EOF
 
