@@ -19,7 +19,9 @@ echo.
 >> "%LOG_FILE%" echo ==========================================
 >> "%LOG_FILE%" echo.
 
-if exist ".venv\Scripts\python.exe" (
+if exist "venv\Scripts\python.exe" (
+    set "PYTHON_EXE=venv\Scripts\python.exe"
+) else if exist ".venv\Scripts\python.exe" (
     set "PYTHON_EXE=.venv\Scripts\python.exe"
 ) else (
     py -3.11 --version >nul 2>nul
